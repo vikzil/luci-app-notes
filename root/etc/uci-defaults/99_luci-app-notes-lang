@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# Language-aware default notes template.
+# This only runs once on the first boot after installation.
+# It does not overwrite user edits once the marker file exists.
+[ -f /etc/.luci-app-notes-lang ] && exit 0
+
+lang=$(uci -q get luci.main.lang || echo 'en')
+template=''
+
+case "$lang" in
+	zh_cn|zh_Hans|zh-hans|zh_CN)
+		template='/usr/share/luci-app-notes/notes.md.zh_Hans'
+		;;
+	*)
+		template=''
+		;;
+esac
+
+if [ -n "$template" ] && [ -f "$template" ]; then
+	cp "$template" /etc/notes.md
+fi
+
+touch /etc/.luci-app-notes-lang
