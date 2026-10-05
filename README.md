@@ -4,7 +4,7 @@ A lightweight Markdown notes application for LuCI, storing content in a single p
 
 ## Description
 
-This app adds a Notes page to LuCI (System -> Notes) backed by /etc/notes.md. It uses:
+This app adds a Notes page to LuCI (System -> Notes) backed by `/etc/notes.md`. It uses:
 
 - An rpcd ucode backend (notes ubus object) for reading and writing the file
 - A JavaScript LuCI view for the editor/viewer UI
@@ -14,7 +14,7 @@ Note: there is currently no live preview while editing. Formatting is applied af
 
 ## Compatibility
 
-Both .ipk and .apk packages are built PKGARCH:=all option and should run on any OpenWrt-supported architecture.
+Both .ipk and .apk packages are built with LUCI_PKGARCH:=all option and should run on any OpenWrt-supported architecture.
 
 Tested and working with both OpenWrt package formats:
 
@@ -23,38 +23,51 @@ Tested and working with both OpenWrt package formats:
 
 ## Installation
 
-Packages are provided in both .ipk and .apk formats for OpenWrt releases using the opkg and apk package managers, respectively.
+Download the appropriate package for your OpenWrt version from the [latest release](https://github.com/vikzil/luci-app-notes/releases/latest). 
+
+To use a translated interface and localized default notes, also download the corresponding `luci-i18n-notes-*` language package.
 
 There is currently no custom package repository, so these packages are not signed by a trusted repository.
 
 ### apk (OpenWrt v25.x and later)
 
-Download the latest .apk from the Releases page, then install it directly with --allow-untrusted:
+Install the application package with --allow-untrusted:
 
-`apk add --allow-untrusted /path/to/luci-app-notes-0.1.0-r2.apk`
+`apk add --allow-untrusted /path/to/luci-app-notes-*.apk`
+
+If using a language package, install it the same way. For example:
+
+`apk add --allow-untrusted /path/to/luci-i18n-notes-*.apk`
 
 ### ipk (OpenWrt v24.x and earlier)
 
-Download the latest .ipk from the Releases page, then install it directly:
+Install the application package:
 
-`opkg install /path/to/luci-app-notes_0.1.0-r2_all.ipk`
+`opkg install /path/to/luci-app-notes_*.ipk`
+
+If using a language package, install it as well. For example:
+
+`opkg install /path/to/luci-i18n-notes-*.ipk`
 
 After installing, log in to LuCI and go to System -> Notes.
 
-The file /etc/notes.md is a conffile, so it survives package upgrades and will not be overwritten if you have already edited it.
+The file `/etc/notes.md` is a conffile, so it survives package upgrades and will not be overwritten if you have already edited it. 
 
-Uninstalling the package does not automatically delete /etc/notes.md. Remove it manually if you want a clean slate.
+If the default notes have not been modified, switching to a supported LuCI language also switches them to the corresponding localized version.
 
-Note: installing or uninstalling this package restarts rpcd to register/unregister its RPC backend. If you're logged in to LuCI at the time, you'll be logged out and need to log back in.
+Uninstalling the package does not automatically delete `/etc/notes.md`. Remove it manually if you want a clean slate.
 
+Note: Installing or uninstalling this package restarts rpcd to register or unregister its RPC backend. If you're logged in to LuCI at the time, you'll be logged out and need to log back in.
 
 ## Build Notes
 
-- Place the package under package/luci-app-notes/.
+- Place the package under `package/luci-app-notes/`.
 - Run `make menuconfig` and make sure luci-app-notes is selected under:
   LuCI ---> 3. Applications --->
+- To build support for additional languages, select the desired languages under:
+  LuCI ---> 2. Modules ---> Translations --->
 - Build just this package:
-  `make package/luci-app-notes/{clean,prepare,compile} V=s`
+  `make package/luci-app-notes/{clean,compile} V=s`
 - Verify that the package has been built:
 ```
 find bin/packages -iname '*luci-app-notes*'
