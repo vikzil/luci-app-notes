@@ -22,6 +22,8 @@ endef
 define Package/$(PKG_NAME)/postinst
 #!/bin/sh
 [ -n "$${IPKG_INSTROOT}" ] || {
+	/usr/libexec/luci-app-notes-default 2>/dev/null || true
+	/etc/init.d/ucitrack reload 2>/dev/null || true
 	rm -f /tmp/luci-indexcache*
 	rm -rf /tmp/luci-modulecache
 	/etc/init.d/rpcd restart 2>/dev/null

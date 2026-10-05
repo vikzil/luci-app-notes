@@ -1,0 +1,50 @@
+#!/bin/sh
+
+# Sync /etc/notes.md to the shipped template matching the configured
+# LuCI language. The file is only replaced while its content still
+# equals the last applied template (recorded in STATE) or one of the
+# shipped templates — once the user edits the notes, the file is left
+# alone on every subsequent run.
+
+TEMPLATE_DIR=/usr/share/luci-app-notes
+BASE=$TEMPLATE_DIR/notes.md
+TARGET=/etc/notes.md
+STATE=/etc/.luci-app-notes-default
+
+lang=$(uci -q get luci.main.lang)
+tmpl=
+
+if [ -n "$lang" ]; then
+	norm=$(printf '%s' "$lang" | tr '[:upper:]' '[:lower:]' | tr '-' '_')
+	for cand in "$BASE.$lang" "$BASE.$norm"; do
+		if [ -f "$cand" ]; then
+			tmpl=$cand
+			break
+		fi
+	done
+fi
+
+# Fall back to the default (English) template.
+[ -z "$tmpl" ] && tmpl=$BASE
+[ -f "$tmpl" ] || exit 0
+
+# If the target exists and does not match the last applied default or
+# any shipped template, the user has modified it — never overwrite.
+if [ -f "$TARGET" ]; then
+	if [ -f "$STATE" ] && cmp -s "$TARGET" "$STATE"; then
+		:
+	else
+		untouched=0
+		for cand in "$BASE" "$BASE".*; do
+			[ -f "$cand" ] || continue
+			if cmp -s "$TARGET" "$cand"; then
+				untouched=1
+				break
+			fi
+		done
+		[ "$untouched" -eq 1 ] || exit 0
+	fi
+fi
+
+cp "$tmpl" "$TARGET"
+cp "$tmpl" "$STATE"
