@@ -1,6 +1,6 @@
 # LuCI Notes
 
-Welcome to LuCI Notes. Your notes are stored in /etc/notes.md and preserved across package upgrades.
+Welcome to LuCI Notes. Your notes are stored in `/etc/notes.md` and preserved across package upgrades.
 
 You can replace everything on this page with your own notes.
 
@@ -9,8 +9,6 @@ Markdown formatting is applied after you save and return to view mode.
 # Markdown
 
 LuCI Notes supports a small subset of Markdown. The examples below show the available formatting.
-
-## Supported markdown
 
 ---
 

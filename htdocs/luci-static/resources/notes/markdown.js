@@ -13,21 +13,20 @@ function escapeHtml(value) {
 function inlineMarkdown(value) {
 	let s = escapeHtml(value);
 
-	// Inline code first, so its content stays literal — shielded from
-	// both escape handling and bold/italic formatting.
-	const code = [];
-
-	s = s.replace(/`([^`]+)`/g, (_, value) => {
-		code.push(`<code>${value}</code>`);
-		return `\x00CODE${code.length - 1}\x00`;
-	});
-
-	// Handle backslash-escaped punctuation outside of code spans.
+	// Shield backslash-escaped punctuation before parsing Markdown.
 	const escapes = [];
 
 	s = s.replace(/\\([\\`*_{}\[\]()#+.!>~-])/g, (_, ch) => {
 		escapes.push(ch);
 		return `\x01ESC${escapes.length - 1}\x01`;
+	});
+
+	// Inline code after escaped backticks have been shielded.
+	const code = [];
+
+	s = s.replace(/`([^`]+)`/g, (_, value) => {
+		code.push(`<code>${value}</code>`);
+		return `\x00CODE${code.length - 1}\x00`;
 	});
 
 	s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");

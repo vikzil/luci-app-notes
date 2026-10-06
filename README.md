@@ -75,9 +75,7 @@ find bin/packages -iname '*luci-app-notes*'
 
 ## Markdown Scope & Usage
 
-This renderer supports a deliberately small subset of Markdown, enough for everyday notes, not a full spec implementation.
-
-## Supported markdown
+LuCI Notes supports a small subset of Markdown. The examples below show the available formatting.
 
 ---
 
