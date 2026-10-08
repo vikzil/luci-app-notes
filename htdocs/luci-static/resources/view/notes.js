@@ -49,6 +49,8 @@ return view.extend({
 			preview.innerHTML = markdown.renderMarkdown(contents);
 
 			container.replaceChildren(
+				preview,
+
 				E('div', {
 					'class': 'cbi-page-actions',
 					'style': 'text-align: right;'
@@ -57,9 +59,7 @@ return view.extend({
 						'class': 'btn cbi-button cbi-button-action',
 						'click': showEdit
 					}, _('Edit'))
-				]),
-
-				preview
+				])
 			);
 		}
 

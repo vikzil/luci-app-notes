@@ -1,0 +1,39 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8\n"
+
+#: htdocs/luci-static/resources/view/notes.js:88
+msgid "Cancel"
+msgstr "Annulla"
+
+#: htdocs/luci-static/resources/view/notes.js:102
+msgid "Could not open file for reading: %s"
+msgstr "Impossibile aprire il file in lettura: %s"
+
+#: htdocs/luci-static/resources/view/notes.js:104
+msgid "Could not open file for writing: %s"
+msgstr "Impossibile aprire il file in scrittura: %s"
+
+#: htdocs/luci-static/resources/view/notes.js:106
+msgid "Could not write complete file: %s"
+msgstr "Impossibile scrivere il file completo: %s"
+
+#: htdocs/luci-static/resources/view/notes.js:59
+msgid "Edit"
+msgstr "Modifica"
+
+#: htdocs/luci-static/resources/view/notes.js:99
+msgid "Failed to save notes."
+msgstr "Impossibile salvare le note."
+
+#: root/usr/share/rpcd/acl.d/luci-app-notes.json:3
+msgid "LuCI Notes application"
+msgstr "Applicazione LuCI Notes"
+
+#: htdocs/luci-static/resources/view/notes.js:122
+#: root/usr/share/luci/menu.d/luci-app-notes.json:3
+msgid "Notes"
+msgstr "Note"
+
+#: htdocs/luci-static/resources/view/notes.js:114
+msgid "Save"
+msgstr "Salva"

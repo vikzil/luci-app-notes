@@ -1,0 +1,39 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8\n"
+
+#: htdocs/luci-static/resources/view/notes.js:88
+msgid "Cancel"
+msgstr "Cancel·la"
+
+#: htdocs/luci-static/resources/view/notes.js:102
+msgid "Could not open file for reading: %s"
+msgstr "No s’ha pogut obrir el fitxer per llegir: %s"
+
+#: htdocs/luci-static/resources/view/notes.js:104
+msgid "Could not open file for writing: %s"
+msgstr "No s’ha pogut obrir el fitxer per escriure: %s"
+
+#: htdocs/luci-static/resources/view/notes.js:106
+msgid "Could not write complete file: %s"
+msgstr "No s’ha pogut escriure el fitxer complet: %s"
+
+#: htdocs/luci-static/resources/view/notes.js:59
+msgid "Edit"
+msgstr "Edita"
+
+#: htdocs/luci-static/resources/view/notes.js:99
+msgid "Failed to save notes."
+msgstr "No s’han pogut desar les notes."
+
+#: root/usr/share/rpcd/acl.d/luci-app-notes.json:3
+msgid "LuCI Notes application"
+msgstr "Aplicació LuCI Notes"
+
+#: htdocs/luci-static/resources/view/notes.js:122
+#: root/usr/share/luci/menu.d/luci-app-notes.json:3
+msgid "Notes"
+msgstr "Notes"
+
+#: htdocs/luci-static/resources/view/notes.js:114
+msgid "Save"
+msgstr "Desa"

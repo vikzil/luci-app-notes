@@ -1,0 +1,39 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8\n"
+
+#: htdocs/luci-static/resources/view/notes.js:88
+msgid "Cancel"
+msgstr "Ακύρωση"
+
+#: htdocs/luci-static/resources/view/notes.js:102
+msgid "Could not open file for reading: %s"
+msgstr "Δεν ήταν δυνατό το άνοιγμα του αρχείου για ανάγνωση: %s"
+
+#: htdocs/luci-static/resources/view/notes.js:104
+msgid "Could not open file for writing: %s"
+msgstr "Δεν ήταν δυνατό το άνοιγμα του αρχείου για εγγραφή: %s"
+
+#: htdocs/luci-static/resources/view/notes.js:106
+msgid "Could not write complete file: %s"
+msgstr "Δεν ήταν δυνατή η πλήρης εγγραφή του αρχείου: %s"
+
+#: htdocs/luci-static/resources/view/notes.js:59
+msgid "Edit"
+msgstr "Επεξεργασία"
+
+#: htdocs/luci-static/resources/view/notes.js:99
+msgid "Failed to save notes."
+msgstr "Αποτυχία αποθήκευσης σημειώσεων."
+
+#: root/usr/share/rpcd/acl.d/luci-app-notes.json:3
+msgid "LuCI Notes application"
+msgstr "Εφαρμογή LuCI Notes"
+
+#: htdocs/luci-static/resources/view/notes.js:122
+#: root/usr/share/luci/menu.d/luci-app-notes.json:3
+msgid "Notes"
+msgstr "Σημειώσεις"
+
+#: htdocs/luci-static/resources/view/notes.js:114
+msgid "Save"
+msgstr "Αποθήκευση"
