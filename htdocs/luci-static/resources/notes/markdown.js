@@ -1,47 +1,41 @@
 'use strict';
+
 'require baseclass';
 
 function escapeHtml(value) {
 	return String(value)
-		.replace(/&/g, "&amp;")
-		.replace(/</g, "&lt;")
-		.replace(/>/g, "&gt;")
-		.replace(/"/g, "&quot;")
-		.replace(/'/g, "&#39;");
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/"/g, '&quot;')
+		.replace(/'/g, '&#39;');
 }
 
 function inlineMarkdown(value) {
-	let s = escapeHtml(value);
+	let s = escapeHtml(value).replace(/\x00/g, '&#xfffd;');
+	const stash = [];
 
-	// Shield backslash-escaped punctuation before parsing Markdown.
-	const escapes = [];
+	// Process escapes and code spans in source order so that
+	// backslashes inside code spans remain literal.
+	s = s.replace(/\\([\\`*_{}\[\]()#+.!>~-])|`([^`]+)`/g, (match, ch, text) => {
+		stash.push(ch !== undefined
+			? escapeHtml(ch)
+			: '<code>' + text + '</code>');
 
-	s = s.replace(/\\([\\`*_{}\[\]()#+.!>~-])/g, (_, ch) => {
-		escapes.push(ch);
-		return `\x01ESC${escapes.length - 1}\x01`;
+		return '\x00' + (stash.length - 1) + '\x00';
 	});
 
-	// Inline code after escaped backticks have been shielded.
-	const code = [];
+	// Avoid emphasis inside words or around whitespace.
+	s = s.replace(/\*\*(?=[^\s*])([^*]*[^\s*])\*\*/g, '<strong>$1</strong>');
+	s = s.replace(/(^|\W)__(?=\S)([^_]*\S)__(?!\w)/g, '$1<strong>$2</strong>');
+	s = s.replace(/\*(?=\S)([^*]*\S)\*/g, '<em>$1</em>');
+	s = s.replace(/(^|\W)_(?=\S)([^_]*\S)_(?!\w)/g, '$1<em>$2</em>');
 
-	s = s.replace(/`([^`]+)`/g, (_, value) => {
-		code.push(`<code>${value}</code>`);
-		return `\x00CODE${code.length - 1}\x00`;
-	});
-
-	s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-	s = s.replace(/__([^_]+)__/g, "<strong>$1</strong>");
-	s = s.replace(/\*([^*]+)\*/g, "<em>$1</em>");
-	s = s.replace(/_([^_]+)_/g, "<em>$1</em>");
-
-	s = s.replace(/\x00CODE(\d+)\x00/g, (_, i) => code[i]);
-	s = s.replace(/\x01ESC(\d+)\x01/g, (_, i) => escapes[i]);
-
-	return s;
+	return s.replace(/\x00(\d+)\x00/g, (match, i) => stash[i]);
 }
 
 function renderMarkdownImpl(markdown) {
-	const lines = String(markdown || "").replace(/\r\n/g, "\n").split("\n");
+	const lines = String(markdown || '').replace(/\r\n/g, '\n').split('\n');
 	const output = [];
 
 	let inCode = false;
@@ -57,7 +51,7 @@ function renderMarkdownImpl(markdown) {
 
 	function closeCode() {
 		if (inCode) {
-			output.push(`<pre><code>${escapeHtml(codeLines.join("\n"))}</code></pre>`);
+			output.push(`<pre><code>${escapeHtml(codeLines.join('\n'))}</code></pre>`);
 			codeLines = [];
 			inCode = false;
 		}
@@ -68,8 +62,10 @@ function renderMarkdownImpl(markdown) {
 		if (/^```/.test(line)) {
 			if (inCode)
 				closeCode();
-			else
+			else {
+				closeList();
 				inCode = true;
+			}
 
 			continue;
 		}
@@ -88,7 +84,7 @@ function renderMarkdownImpl(markdown) {
 		// Horizontal rule
 		if (/^\s*(---+|\*\*\*+)\s*$/.test(line)) {
 			closeList();
-			output.push("<hr>");
+			output.push('<hr>');
 			continue;
 		}
 
@@ -99,10 +95,7 @@ function renderMarkdownImpl(markdown) {
 			closeList();
 
 			const level = heading[1].length;
-			output.push(
-				`<h${level}>${inlineMarkdown(heading[2])}</h${level}>`
-			);
-
+			output.push(`<h${level}>${inlineMarkdown(heading[2])}</h${level}>`);
 			continue;
 		}
 
@@ -119,10 +112,10 @@ function renderMarkdownImpl(markdown) {
 		const unordered = line.match(/^\s*[-*+]\s+(.+)$/);
 
 		if (unordered) {
-			if (listType !== "ul") {
+			if (listType !== 'ul') {
 				closeList();
-				output.push("<ul>");
-				listType = "ul";
+				output.push('<ul>');
+				listType = 'ul';
 			}
 
 			output.push(`<li>${inlineMarkdown(unordered[1])}</li>`);
@@ -133,10 +126,10 @@ function renderMarkdownImpl(markdown) {
 		const ordered = line.match(/^\s*\d+\.\s+(.+)$/);
 
 		if (ordered) {
-			if (listType !== "ol") {
+			if (listType !== 'ol') {
 				closeList();
-				output.push("<ol>");
-				listType = "ol";
+				output.push('<ol>');
+				listType = 'ol';
 			}
 
 			output.push(`<li>${inlineMarkdown(ordered[1])}</li>`);
@@ -150,21 +143,20 @@ function renderMarkdownImpl(markdown) {
 		closeList();
 
 		const indentMatch = line.match(/^([ \t]*)(.*)$/);
-		const indentChars = indentMatch[1].replace(/\t/g, "  ").length;
+		const indentChars = indentMatch[1].replace(/\t/g, '  ').length;
 		const level = Math.round(indentChars / 2);
 		const text = indentMatch[2];
 
-		if (level > 0) {
+		if (level > 0)
 			output.push(`<p style="margin-left: ${level * 2}em">${inlineMarkdown(text)}</p>`);
-		} else {
+		else
 			output.push(`<p>${inlineMarkdown(text)}</p>`);
-		}
 	}
 
 	closeCode();
 	closeList();
 
-	return output.join("\n");
+	return output.join('\n');
 }
 
 return baseclass.extend({
