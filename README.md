@@ -10,11 +10,15 @@ This app adds a Notes page to LuCI (System -> Notes) backed by `/etc/notes.md`. 
 - A JavaScript LuCI view for the editor/viewer UI
 - A small custom Markdown-to-HTML renderer without external dependencies
 
-Note: there is currently no live preview while editing. Formatting is applied after you save and switch back to view mode.
+The application provides a plain-text Markdown editor with built-in syntax help. Notes are rendered as formatted Markdown outside edit mode.
+
+LuCI Notes uses LuCI's standard PO/Weblate translation workflow for localized interface text and Markdown help.
+
+For standalone releases, language-specific translations may be distributed through `luci-i18n-notes-*` packages.
 
 ## Compatibility
 
-Both .ipk and .apk packages are built with LUCI_PKGARCH:=all option and should run on any OpenWrt-supported architecture.
+Both .ipk and .apk packages are built with `LUCI_PKGARCH:=all` and should run on any OpenWrt-supported architecture.
 
 Tested and working with both OpenWrt package formats:
 
@@ -23,9 +27,9 @@ Tested and working with both OpenWrt package formats:
 
 ## Installation
 
-Download the appropriate package for your OpenWrt version from the [latest release](https://github.com/vikzil/luci-app-notes/releases/latest). 
+Download the appropriate package for your OpenWrt version from the [latest release](https://github.com/vikzil/luci-app-notes/releases/latest).
 
-To use a translated interface and localized default notes, also download the corresponding `luci-i18n-notes-*` language package.
+If available, install the corresponding `luci-i18n-notes-*` language package to use a translated interface and Markdown help.
 
 There is currently no custom package repository, so these packages are not signed by a trusted repository.
 
@@ -49,25 +53,21 @@ If using a language package, install it as well. For example:
 
 `opkg install /path/to/luci-i18n-notes-*.ipk`
 
-After installing, log in to LuCI and go to System -> Notes.
+After installing, log out of LuCI and log back in for the Notes menu entry to appear under **System → Notes**.
 
 The file `/etc/notes.md` is a conffile, so it survives package upgrades and will not be overwritten if you have already edited it. 
 
-If the default notes have not been modified, switching to a supported LuCI language also switches them to the corresponding localized version.
-
 Uninstalling the package does not automatically delete `/etc/notes.md`. Remove it manually if you want a clean slate.
-
-Note: Installing or uninstalling this package restarts rpcd to register or unregister its RPC backend. If you're logged in to LuCI at the time, you'll be logged out and need to log back in.
 
 ## Build Notes
 
-- Place the package under `package/luci-app-notes/`.
+- Place the package under `feeds/luci/applications/luci-app-notes/`.
 - Run `make menuconfig` and make sure luci-app-notes is selected under:
-  LuCI ---> 3. Applications --->
+  `LuCI ---> 3. Applications --->`
 - To build support for additional languages, select the desired languages under:
-  LuCI ---> 2. Modules ---> Translations --->
+  `LuCI ---> 2. Modules ---> Translations --->`
 - Build just this package:
-  `make package/luci-app-notes/{clean,compile} V=s`
+  `make package/feeds/luci/luci-app-notes/{clean,compile} V=s`
 - Verify that the package has been built:
 ```
 find bin/packages -iname '*luci-app-notes*'
@@ -75,143 +75,20 @@ find bin/packages -iname '*luci-app-notes*'
 
 ## Markdown Scope & Usage
 
-LuCI Notes supports a small subset of Markdown. The examples below show the available formatting.
+LuCI Notes supports a small subset of Markdown.
 
----
+Built-in expandable Markdown help provides examples of supported formatting, showing the rendered result alongside the corresponding plaintext syntax.
 
-# Header 1
-`# Header 1`
-
----
-
-## Header 2
-`## Header 2`
-
----
-
-### Header 3
-`### Header 3`
-
----
-
-**Bold text**
-
-`**Bold text**`
-
----
-
-__Also bold text__
-
-`__Also bold text__`
-
----
-
-*Italic text*
-
-`*Italic text*`
-
----
-
-_Also italic text_
-
-`_Also italic text_`
-
----
-
-Inline `code` like this
-
-\`code\`
-
----
-
-> A blockquote
-
-`> A blockquote`
-
----
-
-- Unordered list item one
-- Unordered list item two
-+ Unordered list item three
-+ Unordered list item four
-* Unordered list item five
-* Unordered list item six
-
-`- Unordered list item one`
-
-`- Unordered list item two`
-
-`+ Unordered list item three`
-
-`+ Unordered list item four`
-
-`* Unordered list item five`
-
-`* Unordered list item six`
-
----
-
-1. Ordered list item one
-2. Ordered list item two
-
-`1. Ordered list item one`
-
-`2. Ordered list item two`
-
----
-
-```
-function example() {
-    return true;
-}
-```
-
-\``` \
-function example() { \
-    return true; \
-} \
-\```
-
---- 
-
-Special characters can be escaped using a backslash:
-
-\*\*This text is not bold, because asterisks are escaped\*\*
-
-`\*\*This text is not bold, because asterisks are escaped\*\*`
-
----
-
-Horizontal rules:
-
-`---`
-
----
-
-## Not supported
-- Links 
-- Images
-- Tables
-- Nested lists
-- HTML passthrough (input is escaped and not interpreted)
-- Live preview while editing
-
----
+The help also includes a **Not supported** section describing Markdown features and functionality that are not available.
 
 ## Screenshots
 
-**Menu location**
+**Notes page and LuCI menu integration**
+![Notes page and LuCI menu integration](screenshots/luci-app-notes-1.png)
 
-![Notes entry in the LuCI menu](screenshots/menu.png)
+**Rendered Markdown, Edit button and Markdown help**
+![Rendered Markdown, Edit button and Markdown help](screenshots/luci-app-notes-2.png)
 
-**View mode**
+**Markdown editor with Cancel and Save buttons**
+![Markdown editor with Cancel and Save buttons](screenshots/luci-app-notes-3.png)
 
-![Notes description in view mode](screenshots/overview.png)
-
-**Edit mode**
-
-![Markdown source in edit mode](screenshots/markdown-edit.png)
-
-**Rendered result**
-
-![Rendered Markdown in view mode](screenshots/markdown-rendered.png)
